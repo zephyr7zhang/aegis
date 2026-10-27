@@ -1,322 +1,845 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="AEGIS 守界是一款户外应急通信终端。北斗传信跨越信号盲区，多人组网接力传信，通信、感知、定位与能源管理一体集成。">
-  <meta name="theme-color" content="#ffffff">
-  <title>AEGIS 守界 - 为更安全的探索</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="preload" as="image" href="assets/img/hero.jpg">
-  <link rel="stylesheet" href="assets/css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>守界 AEGIS · 为更安全的探索</title>
+<style>
+  :root{
+    --bg:#000; --bg2:#0b0b0d; --card:#141416; --line:rgba(255,255,255,.12);
+    --txt:#f5f5f7; --sub:#a1a1a6; --accent:#ff6a00; --accent2:#ff8f2b;
+    --green:#8CFF3F;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro SC","PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+
+  /* ===== 导航（FLEXTAIL 风格） ===== */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;height:66px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(12,14,17,.78);backdrop-filter:saturate(160%) blur(22px);
+    -webkit-backdrop-filter:saturate(160%) blur(22px);
+    border-bottom:1px solid transparent;transition:border-color .3s;
+  }
+  nav::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  nav.scrolled{border-bottom-color:var(--line)}
+  .nav-inner{width:100%;max-width:1280px;display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+  .brand{display:flex;align-items:baseline;gap:10px}
+  .brand .logo{
+    font-size:26px;font-weight:900;letter-spacing:3px;color:#fff;line-height:1;
+    transform:scaleX(1.12);transform-origin:left center;display:inline-block;
+  }
+  .brand .logo i{font-style:normal;color:var(--accent)}
+  .brand .cn{font-size:12px;color:var(--sub);letter-spacing:4px;font-weight:400}
+  .nav-links{display:flex;gap:34px;font-size:14px;color:#e2e2e6;font-weight:500;letter-spacing:1px}
+  .nav-links a{display:flex;align-items:center;gap:6px;transition:color .2s;padding:6px 0}
+  .nav-links a:hover{color:var(--accent)}
+  .nav-links a .arr{width:8px;height:8px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(45deg);margin-top:-3px;opacity:.7}
+  .nav-right{display:flex;align-items:center;gap:20px}
+  .nav-icon{
+    width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#e2e2e6;cursor:pointer;transition:background .2s,color .2s;
+  }
+  .nav-icon:hover{background:rgba(255,255,255,.1);color:#fff}
+  .nav-icon svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .nav-cta{
+    font-size:13px;padding:9px 22px;border-radius:980px;letter-spacing:2px;
+    background:var(--accent);color:#fff;font-weight:700;transition:background .2s,transform .2s;
+  }
+  .nav-cta:hover{background:var(--accent2);transform:scale(1.05)}
+  @media(max-width:860px){.nav-links{display:none}.nav-icon{display:none}}
+
+  /* ===== 通用区块 ===== */
+  section{position:relative}
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1)}
+  .reveal.in{opacity:1;transform:none}
+  /* 前方区块（首屏 / 数据 / 北斗 / 三防）：文字统一靠左 */
+  .eyebrow{font-size:13px;letter-spacing:7px;color:var(--accent);font-weight:600;margin-bottom:16px;text-transform:uppercase;display:flex;align-items:center;justify-content:flex-start;gap:12px}
+  .eyebrow::before{content:"";flex:none;width:28px;height:2px;background:var(--accent)}
+  /* 后续区块统一居中 */
+  .cap-head .eyebrow,.lab-head .eyebrow,.specs-head .eyebrow,.versions-head .eyebrow,
+  .colors-inner .eyebrow,.reserve-lead .eyebrow{justify-content:center}
+  .h-xl{font-size:clamp(32px,4.8vw,58px);font-weight:700;line-height:1.2;letter-spacing:2px}
+  .h-lg{font-size:clamp(26px,3.2vw,42px);font-weight:700;line-height:1.25;letter-spacing:1px}
+  .lead{font-size:clamp(14px,1.3vw,17px);color:var(--sub);line-height:1.9;max-width:640px;font-weight:300}
+
+  /* ===== Hero（视频首屏） ===== */
+  .hero{height:100vh;min-height:640px;display:flex;align-items:flex-end}
+  .hero-bg{position:absolute;inset:0;overflow:hidden;background:#000}
+  .hero-bg video,.hero-bg img{
+    width:100%;height:100%;object-fit:cover;object-position:center;display:block;
+    position:absolute;inset:0;
+  }
+  .hero-bg video{z-index:1}
+  .hero-bg img{z-index:0}
+  .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.42),rgba(0,0,0,.08) 38%,rgba(0,0,0,.82) 92%)}
+  .hero-veil{
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(ellipse 900px 520px at 78% 40%,rgba(255,106,0,.12),transparent 62%);
+  }
+  .hero-sound{
+    position:absolute;right:28px;bottom:34px;z-index:3;
+    display:flex;align-items:center;gap:9px;cursor:pointer;
+    padding:9px 18px;border-radius:980px;
+    background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.28);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    color:#fff;font-size:12.5px;letter-spacing:2px;font-weight:600;
+    transition:background .25s,border-color .25s,transform .25s;
+  }
+  .hero-sound:hover{background:rgba(0,0,0,.62);border-color:#fff;transform:scale(1.04)}
+  .hero-sound svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .scroll-hint{
+    position:absolute;left:50%;transform:translateX(-50%);bottom:34px;z-index:3;
+    font-size:11px;letter-spacing:4px;color:rgba(255,255,255,.6);
+    animation:hint 2.4s ease-in-out infinite;
+  }
+  @keyframes hint{0%,100%{opacity:.35;transform:translate(-50%,0)}50%{opacity:.9;transform:translate(-50%,6px)}}
+  .hero-content{position:relative;z-index:2;width:100%;max-width:1180px;margin:0 auto;padding:0 28px 88px}
+  .hero-content h1{
+    font-size:clamp(48px,8vw,104px);font-weight:900;letter-spacing:14px;line-height:1;
+    color:#f5f5f7;text-shadow:0 4px 30px rgba(0,0,0,.55);
+    animation:rise 1.1s cubic-bezier(.22,.61,.36,1) both;
+  }
+  .hero-content .cn{font-size:clamp(18px,2.4vw,30px);letter-spacing:12px;margin-top:18px;color:#e8e8ec;font-weight:600;animation:rise 1.1s .15s cubic-bezier(.22,.61,.36,1) both}
+  .hero-content .sub{margin-top:18px;font-size:14px;letter-spacing:5px;color:var(--sub);font-weight:300;animation:rise 1.1s .3s cubic-bezier(.22,.61,.36,1) both}
+  .hero-actions,.hero-price{animation:rise 1.1s .45s cubic-bezier(.22,.61,.36,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+  .hero-actions{margin-top:36px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .btn-primary{
+    display:inline-block;padding:14px 36px;border-radius:980px;background:var(--accent);
+    color:#fff;font-size:15px;font-weight:600;letter-spacing:2px;cursor:pointer;border:none;
+    transition:background .25s,transform .25s;
+  }
+  .btn-primary:hover{background:var(--accent2);transform:scale(1.05)}
+  .btn-ghost{
+    display:inline-block;padding:13px 30px;border-radius:980px;border:1px solid rgba(255,255,255,.35);
+    color:#fff;font-size:14px;letter-spacing:2px;cursor:pointer;background:transparent;transition:border-color .25s,background .25s;
+  }
+  .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+  .hero-price{margin-top:24px;font-size:14px;color:#d6d6da;letter-spacing:2px;font-weight:300}
+  .hero-price b{font-size:21px;color:#fff;font-weight:800}
+
+  /* ===== 数据带 ===== */
+  .stats{background:var(--bg2);padding:96px 28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .stats-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:36px;text-align:left}
+  .stat .num{font-size:clamp(36px,4.5vw,58px);font-weight:800;color:#f5f5f7;letter-spacing:1px}
+  .stat .num i{font-style:normal;font-size:.5em}
+  .stat .lab{margin-top:12px;font-size:13px;color:var(--sub);letter-spacing:2px;line-height:1.7;font-weight:300}
+  @media(max-width:760px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+
+  /* ===== 全屏故事区块 ===== */
+  .story{height:92vh;min-height:560px;display:flex;align-items:center;overflow:hidden}
+  .story .bg{position:absolute;inset:0}
+  .story .bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);transition:transform 1.6s cubic-bezier(.22,.61,.36,1)}
+  .story.in .bg img{transform:scale(1)}
+  .story .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.15) 60%,transparent)}
+  .story.right .bg::after{background:linear-gradient(270deg,rgba(0,0,0,.72),rgba(0,0,0,.15) 60%,transparent)}
+  .story-content{position:relative;z-index:2;max-width:1180px;margin:0 auto;width:100%;padding:0 28px}
+  .story.right .story-content{display:flex;justify-content:flex-end}
+  .story-text{max-width:520px}
+  .story-text .h-lg{margin-bottom:20px}
+  .feat-list{margin-top:28px;display:flex;flex-direction:column;gap:14px}
+  .feat-list li{list-style:none;display:flex;gap:12px;align-items:flex-start;font-size:14px;color:#d8d8dc;line-height:1.7;font-weight:300}
+  .feat-list li::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-top:8px}
+  /* 保留原图文字的轻遮罩变体 */
+  .story.bare .bg::after{background:linear-gradient(180deg,rgba(0,0,0,.3),transparent 28%,transparent 62%,rgba(0,0,0,.78))}
+  .story.bare .story-content{display:flex;justify-content:center;align-items:flex-end;height:100%;padding-bottom:64px}
+  .story.bare .story-text{text-align:center}
+  .story.bare .lead{margin:0 auto}
+
+  /* ===== 四大能力 ===== */
+  .capabilities{padding:130px 28px;background:
+    radial-gradient(ellipse 700px 420px at 88% 10%,rgba(255,106,0,.08),transparent 60%),
+    radial-gradient(ellipse 760px 480px at 8% 92%,rgba(72,124,255,.08),transparent 62%),
+    var(--bg)}
+  .cap-head{max-width:1180px;margin:0 auto 64px;text-align:center}
+  .cap-head .lead{margin:20px auto 0}
+  .cap-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .cap-card{
+    background:rgba(255,255,255,.05);
+    backdrop-filter:blur(20px) saturate(170%);
+    -webkit-backdrop-filter:blur(20px) saturate(170%);
+    border:1px solid rgba(255,255,255,.13);border-radius:22px;padding:36px 26px;
+    box-shadow:0 16px 44px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.13);
+    transition:transform .4s,border-color .4s,box-shadow .4s,background .4s;
+  }
+  .cap-card:hover{transform:translateY(-8px);border-color:rgba(255,106,0,.55);background:rgba(255,255,255,.08);box-shadow:0 24px 56px rgba(0,0,0,.5)}
+  .cap-icon{width:52px;height:52px;border-radius:14px;background:rgba(255,106,0,.12);display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+  .cap-icon svg{width:26px;height:26px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .cap-card h3{font-size:18px;font-weight:700;margin-bottom:6px;letter-spacing:2px}
+  .cap-card .en{font-size:11px;letter-spacing:4px;color:var(--sub);margin-bottom:16px}
+  .cap-card p{font-size:13px;color:var(--sub);line-height:1.8;font-weight:300}
+  @media(max-width:960px){.cap-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.cap-grid{grid-template-columns:1fr}}
+
+  /* ===== 实测数据（发布会风格 + 毛玻璃） ===== */
+  .lab{padding:130px 28px;border-top:1px solid var(--line);background:
+    radial-gradient(ellipse 720px 420px at 10% 6%,rgba(255,106,0,.12),transparent 60%),
+    radial-gradient(ellipse 860px 520px at 90% 96%,rgba(72,124,255,.12),transparent 62%),
+    radial-gradient(ellipse 600px 400px at 55% 50%,rgba(140,255,63,.05),transparent 65%),
+    var(--bg2)}
+  .lab-inner{max-width:1180px;margin:0 auto;text-align:center}
+  .lab-head{margin-bottom:60px}
+  .lab-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+  .lab-card{
+    background:rgba(255,255,255,.055);
+    backdrop-filter:blur(22px) saturate(170%);
+    -webkit-backdrop-filter:blur(22px) saturate(170%);
+    border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:30px 26px;
+    box-shadow:0 18px 50px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.14);
+    transition:transform .45s cubic-bezier(.22,.61,.36,1),border-color .45s,background .45s;
+  }
+  .lab-card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.085)}
+  .lab-card .num{font-size:clamp(24px,2.3vw,32px);font-weight:800;color:var(--accent);letter-spacing:.5px}
+  .lab-card .num.green{color:var(--green)}
+  .lab-card .lab-t{margin-top:9px;font-size:14px;font-weight:600}
+  .lab-card .lab-d{margin-top:7px;font-size:12.5px;color:var(--sub);line-height:1.7;font-weight:300}
+  .lab-card.feature{grid-column:span 2;padding:44px 42px;display:flex;flex-direction:column;justify-content:center}
+  .lab-card.feature .num{
+    font-size:clamp(64px,7.5vw,112px);font-weight:900;line-height:1;letter-spacing:-1px;
+    color:#8CFF3F;text-shadow:0 0 44px rgba(140,255,63,.28);
+  }
+  .lab-card.feature .lab-t{font-size:19px;margin-top:16px}
+  .lab-card.feature .lab-d{font-size:14px;margin-top:10px;max-width:420px;margin-left:auto;margin-right:auto}
+  .lab-note{margin-top:26px;font-size:12px;color:#6e6e73;letter-spacing:1px}
+  @media(max-width:860px){.lab-grid{grid-template-columns:1fr}.lab-card.feature{grid-column:span 1}}
+
+  /* ===== 技术规格（毛玻璃信息块） ===== */
+  .specs{padding:130px 28px;background:
+    radial-gradient(ellipse 720px 440px at 8% 12%,rgba(72,124,255,.09),transparent 60%),
+    radial-gradient(ellipse 800px 500px at 92% 88%,rgba(255,106,0,.09),transparent 62%),
+    radial-gradient(ellipse 560px 380px at 50% 55%,rgba(140,255,63,.045),transparent 65%),
+    var(--bg)}
+  .specs-inner{max-width:1180px;margin:0 auto}
+  .specs-head{text-align:center;margin-bottom:58px}
+  .spec-cat{
+    margin:48px 0 22px;font-size:13px;letter-spacing:6px;color:var(--accent);font-weight:600;
+    display:flex;align-items:center;justify-content:center;gap:18px;text-align:center;
+  }
+  .spec-cat::before,.spec-cat::after{content:"";flex:1;max-width:240px;height:1px}
+  .spec-cat::before{background:linear-gradient(270deg,rgba(255,106,0,.4),transparent)}
+  .spec-cat::after{background:linear-gradient(90deg,rgba(255,106,0,.4),transparent)}
+  .spec-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+  .spec-tile{
+    position:relative;overflow:hidden;width:238px;text-align:center;
+    background:rgba(255,255,255,.05);
+    backdrop-filter:blur(20px) saturate(170%);
+    -webkit-backdrop-filter:blur(20px) saturate(170%);
+    border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:24px 22px;
+    box-shadow:0 14px 38px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.13);
+    transition:transform .4s cubic-bezier(.22,.61,.36,1),border-color .4s,background .4s;
+  }
+  .spec-tile:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.085)}
+  .spec-tile::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--accent),transparent 70%);opacity:.7;
+  }
+  .spec-tile .t-lab{font-size:12px;color:var(--sub);letter-spacing:2px;margin-bottom:10px}
+  .spec-tile .t-val{font-size:16px;font-weight:700;line-height:1.55;letter-spacing:.5px}
+  .spec-tile .t-val small{display:block;font-size:12px;font-weight:300;color:var(--sub);margin-top:6px;letter-spacing:1px}
+  .spec-tile.wide{width:492px}
+  @media(max-width:640px){.spec-tile,.spec-tile.wide{width:100%}}
+
+  /* ===== 版本对比 ===== */
+  .versions{padding:130px 28px;background:
+    radial-gradient(ellipse 800px 480px at 12% 90%,rgba(255,106,0,.08),transparent 60%),
+    radial-gradient(ellipse 700px 420px at 90% 8%,rgba(72,124,255,.08),transparent 62%),
+    var(--bg2);border-top:1px solid var(--line)}
+  .versions-inner{max-width:1180px;margin:0 auto}
+  .versions-head{text-align:center;margin-bottom:60px}
+  .versions-head .lead{margin:18px auto 0}
+  .ver-row{display:flex;justify-content:center;gap:26px;flex-wrap:wrap}
+  .ver-card{
+    position:relative;width:430px;max-width:92vw;border-radius:26px;padding:38px 34px;cursor:pointer;
+    background:rgba(255,255,255,.05);
+    backdrop-filter:blur(22px) saturate(170%);
+    -webkit-backdrop-filter:blur(22px) saturate(170%);
+    border:1px solid rgba(255,255,255,.13);
+    box-shadow:0 18px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.13);
+    transition:transform .45s cubic-bezier(.22,.61,.36,1),border-color .45s,box-shadow .45s,background .45s;
+  }
+  .ver-card:hover{transform:translateY(-8px);border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08)}
+  .ver-card.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent),0 28px 66px rgba(255,106,0,.22)}
+  .ver-card .v-tag{font-size:12px;letter-spacing:5px;color:var(--sub);font-weight:600}
+  .ver-card.pro .v-tag{color:var(--accent)}
+  .ver-card h3{font-size:26px;font-weight:800;margin-top:10px;letter-spacing:2px}
+  .ver-card .v-price{margin:18px 0 4px;font-size:44px;font-weight:900;color:#fff}
+  .ver-card .v-price small{font-size:15px;color:var(--sub);font-weight:300;letter-spacing:1px}
+  .ver-card .v-sub{font-size:13px;color:var(--sub);letter-spacing:1px;margin-bottom:24px}
+  .ver-card ul{list-style:none;display:flex;flex-direction:column;gap:11px;margin-top:6px}
+  .ver-card li{font-size:13.5px;color:#d8d8dc;display:flex;gap:10px;align-items:flex-start;line-height:1.65;font-weight:300}
+  .ver-card li.yes::before{content:"✓";color:var(--green);font-weight:700;flex:none}
+  .ver-card li.no{color:#6e6e73}
+  .ver-card li.no::before{content:"—";color:#4a4a4e;flex:none}
+  .ver-card .v-btn{
+    margin-top:28px;display:block;text-align:center;padding:13px;border-radius:980px;
+    border:1px solid rgba(255,255,255,.3);font-size:14px;letter-spacing:2px;font-weight:600;
+    transition:all .3s;
+  }
+  .ver-card:hover .v-btn{border-color:#fff}
+  .ver-card.selected .v-btn{background:var(--accent);border-color:var(--accent);color:#fff}
+  .ver-badge{
+    position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+    background:var(--accent);color:#fff;font-size:12px;font-weight:700;letter-spacing:2px;
+    padding:6px 18px;border-radius:980px;box-shadow:0 8px 24px rgba(255,106,0,.4);white-space:nowrap;
+  }
+
+  /* ===== 配色（交互卡片） ===== */
+  .colors{padding:130px 28px;background:var(--bg);border-top:1px solid var(--line)}
+  .colors-inner{max-width:1180px;margin:0 auto;text-align:center}
+  .color-row{margin-top:56px;display:flex;justify-content:center;gap:22px;flex-wrap:wrap}
+  .color-item{
+    position:relative;width:250px;max-width:88vw;border-radius:24px;overflow:hidden;
+    border:1px solid var(--line);background:var(--card);cursor:pointer;
+    transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s,filter .5s;
+  }
+  .color-item .swatch{
+    height:330px;background-size:cover;background-position:center;
+    transition:transform .8s cubic-bezier(.22,.61,.36,1);
+  }
+  .color-item[data-color="青山绿"] .swatch{background-image:url("assets/color-green.jpg?v=4")}
+  .color-item[data-color="雪岭青"] .swatch{background-image:url("assets/color-teal.jpg?v=4")}
+  .color-item[data-color="冰川银"] .swatch{background-image:url("assets/color-silver.jpg?v=4")}
+  .color-item[data-color="曜石黑"] .swatch{background-image:url("assets/color-black.jpg?v=4")}
+  .color-item:hover .swatch{transform:scale(1.06)}
+  .color-item .meta{padding:20px 22px 24px;text-align:left}
+  .color-item .cn2{font-size:18px;font-weight:700;letter-spacing:2px}
+  .color-item .cn2 .classic{font-size:11px;color:var(--accent);border:1px solid rgba(255,106,0,.5);border-radius:980px;padding:2px 10px;margin-left:8px;letter-spacing:1px;vertical-align:3px}
+  .color-item .desc{margin-top:6px;font-size:12px;color:var(--sub);letter-spacing:2px}
+  .color-item .pick{
+    position:absolute;top:14px;right:14px;font-size:12px;letter-spacing:2px;
+    padding:6px 14px;border-radius:980px;background:rgba(0,0,0,.55);color:#fff;
+    border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(8px);
+    opacity:0;transform:translateY(-6px);transition:opacity .35s,transform .35s;
+  }
+  .color-item:hover .pick{opacity:1;transform:none}
+  .color-item::after{
+    content:"";position:absolute;inset:0;background:rgba(0,0,0,0);
+    transition:background .5s;pointer-events:none;
+  }
+  /* 悬停其一：该卡片发白提亮，其余压暗蒙版 */
+  .color-row:hover .color-item:not(:hover){filter:saturate(.5) brightness(.8)}
+  .color-row:hover .color-item:not(:hover)::after{background:rgba(0,0,0,.58)}
+  .color-item:hover{
+    transform:translateY(-8px);filter:brightness(1.14);
+    border-color:rgba(255,255,255,.45);
+    box-shadow:0 0 0 1px rgba(255,255,255,.28),0 34px 80px rgba(0,0,0,.7);
+  }
+  .color-item.selected{
+    border-color:var(--accent);
+    box-shadow:0 0 0 2px var(--accent),0 26px 64px rgba(255,106,0,.22);
+  }
+  .color-item.selected .pick{opacity:1;transform:none;background:var(--accent);border-color:var(--accent)}
+  @media(max-width:640px){.color-item{width:82vw}.color-item .swatch{height:320px}}
+
+  /* ===== 新品意向预约登记 ===== */
+  .reserve{padding:130px 28px;background:
+    radial-gradient(ellipse 900px 480px at 50% 118%,rgba(255,106,0,.16),transparent 62%),var(--bg)}
+  .reserve-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.1fr 1fr;gap:70px;align-items:center}
+  .reserve-lead{text-align:center}
+  .reserve-lead .price-tag{justify-content:center}
+  .reserve-lead .crowd{text-align:center}
+  .reserve-lead .reserve-points li{justify-content:center}
+  .price-tag{margin:26px 0 6px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .price-tag .rmb{font-size:clamp(40px,4.6vw,58px);font-weight:900;color:#F08A1D;text-shadow:0 0 40px rgba(240,138,29,.3)}
+  .price-tag .per{font-size:15px;color:var(--sub);letter-spacing:1px}
+  .price-tag .ver-note{font-size:13px;color:var(--sub);letter-spacing:1px;width:100%}
+  .crowd{margin-top:28px;padding:24px;border-radius:18px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.13);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+  .crowd .c-t{font-size:14px;font-weight:600;letter-spacing:1px;margin-bottom:14px}
+  .crowd .c-t b{color:var(--accent)}
+  .crowd-bar{height:8px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+  .crowd-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#ff8f2b,#ff6a00);transition:width 1.4s cubic-bezier(.22,.61,.36,1)}
+  .crowd .c-d{margin-top:12px;font-size:12px;color:var(--sub);letter-spacing:1px;line-height:1.7}
+  .reserve-points{margin-top:26px;display:flex;flex-direction:column;gap:12px}
+  .reserve-points li{list-style:none;font-size:13.5px;color:var(--sub);display:flex;gap:10px;align-items:center;font-weight:300;letter-spacing:.5px}
+  .reserve-points li::before{content:"✓";color:var(--green);font-weight:700}
+  .form-card{
+    background:rgba(255,255,255,.06);
+    backdrop-filter:blur(24px) saturate(170%);
+    -webkit-backdrop-filter:blur(24px) saturate(170%);
+    border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:38px 34px;
+    box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.15);
+  }
+  .form-card h3{font-size:21px;font-weight:800;margin-bottom:6px;letter-spacing:1px}
+  .form-card .tip{font-size:12.5px;color:var(--sub);margin-bottom:26px;line-height:1.7}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12.5px;color:var(--sub);margin-bottom:8px;letter-spacing:1.5px}
+  .field input,.field select{
+    width:100%;padding:13px 16px;border-radius:12px;border:1px solid var(--line);
+    background:#0d0d0f;color:var(--txt);font-size:15px;outline:none;transition:border-color .2s;
+    font-family:inherit;
+  }
+  .field input:focus,.field select:focus{border-color:var(--accent)}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-card .btn-primary{width:100%;margin-top:8px;font-size:15px}
+  .form-ok{display:none;text-align:center;padding:30px 0 10px}
+  .form-ok .tick{width:64px;height:64px;border-radius:50%;background:rgba(140,255,63,.14);color:var(--green);font-size:32px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+  .form-ok h4{font-size:19px;margin-bottom:10px}
+  .form-ok p{font-size:14px;color:var(--sub);line-height:1.8}
+  @media(max-width:900px){.reserve-inner{grid-template-columns:1fr}}
+
+  /* ===== 页脚 ===== */
+  footer{background:var(--bg2);border-top:1px solid var(--line);padding:64px 28px 40px}
+  .foot-inner{max-width:1180px;margin:0 auto}
+  .foot-top{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;margin-bottom:40px}
+  .foot-brand{font-size:20px;font-weight:800;letter-spacing:6px}
+  .foot-brand p{margin-top:10px;font-size:13px;color:var(--sub);letter-spacing:2px;font-weight:300}
+  .foot-col h5{font-size:13px;color:#d8d8dc;margin-bottom:14px;letter-spacing:2px}
+  .foot-col a,.foot-col span{display:block;font-size:13px;color:var(--sub);margin-bottom:9px;transition:color .2s;font-weight:300}
+  .foot-col a:hover{color:#fff}
+  .foot-bottom{border-top:1px solid var(--line);padding-top:24px;font-size:12px;color:#6e6e73;line-height:2;letter-spacing:.5px;font-weight:300}
+</style>
 </head>
 <body>
-  <a class="skip" href="#overview">跳到内容</a>
-  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
 
-  <header class="nav" id="nav">
-    <a class="brand" href="#top" aria-label="AEGIS 守界，回到页首">
-      <span class="brand-en">AEGIS</span>
-      <span class="brand-cn">守界</span>
-    </a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="打开菜单">
-      <span></span><span></span>
-    </button>
-    <nav class="nav-links" id="nav-menu" aria-label="产品">
-      <a href="#overview">概览</a>
-      <a href="#signal">北斗传信</a>
-      <a href="#tough">可靠</a>
-      <a href="#mesh">组网</a>
+<!-- 导航 -->
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="logo">AEGIS<i>.</i></span><span class="cn">守界</span></div>
+    <div class="nav-links">
+      <a href="#beidou">北斗通信</a>
+      <a href="#capabilities">四大能力<span class="arr"></span></a>
+      <a href="#specs">技术规格<span class="arr"></span></a>
+      <a href="#versions">版本价格</a>
       <a href="#colors">配色</a>
-      <a href="#specs">参数</a>
-    </nav>
-    <a class="nav-cta" href="#reserve">预约咨询</a>
-  </header>
-
-  <main id="top">
-    <section class="hero">
-      <div class="hero-stage">
-      <div class="hero-media">
-        <img src="assets/img/hero.jpg" alt="AEGIS 守界立在高山岩石上" width="1680" height="608">
-      </div>
-      <div class="hero-shade" aria-hidden="true"></div>
-      <div class="hero-inner">
-        <p class="eyebrow">户外应急通信终端</p>
-        <h1>AEGIS</h1>
-        <p class="tagline">守界 · 为更安全的探索</p>
-        <p class="lede">通信、感知、定位与能源管理，一体集成。<br>无公网，依然把关键信息送出去。</p>
-        <div class="hero-actions">
-          <a class="btn btn-fill" href="#signal">了解 AEGIS</a>
-          <a class="btn btn-ghost" href="#film">主题画面</a>
-        </div>
-      </div>
-      </div>
-      <ul class="hero-facts">
-        <li><strong>北斗传信</strong><span>无公网仍可发出求救信息</span></li>
-        <li><strong>多人组网</strong><span>多节点接力传信</span></li>
-        <li><strong>一键 SOS</strong><span>红色求救键单独区分</span></li>
-        <li><strong>三种配色</strong><span>青山绿 / 雪岭青 / 冰川银</span></li>
-      </ul>
-    </section>
-
-    <section class="overview" id="overview">
-      <p class="overview-copy reveal">无论多远，护你归来。AEGIS 把卫星传信、环境感知、定位与能源管理收进一支可握于掌心的终端，让探索在判断清楚之后，仍然有路可回。</p>
-      <ul class="pillars reveal">
-        <li>
-          <strong>通信</strong>
-          <span>无公网仍可发出关键求救信息。</span>
-        </li>
-        <li>
-          <strong>感知</strong>
-          <span>温度与状态，沿机身提示。</span>
-        </li>
-        <li>
-          <strong>定位</strong>
-          <span>节点相连，信息可以接力。</span>
-        </li>
-        <li>
-          <strong>能源管理</strong>
-          <span>照明、告警与求救共用能源。</span>
-        </li>
-      </ul>
-    </section>
-
-    <section class="film" id="film" aria-label="无论多远，护你归来">
-      <img src="assets/img/film.jpg" alt="无论多远，护你归来" width="1954" height="1280">
-    </section>
-
-    <section class="story" id="story">
-      <div class="story-sticky">
-        <article class="slide is-on" data-chapter="signal">
-          <img src="assets/img/signal.jpg" alt="AEGIS 在地球与卫星之间建立传信" width="1504" height="688">
-          <div class="slide-shade" aria-hidden="true"></div>
-        </article>
-        <article class="slide" data-chapter="tough" aria-hidden="true">
-          <img src="assets/img/tough.jpg" alt="AEGIS 在碎石与泥土的冲击中保持完整" width="1680" height="608">
-          <div class="slide-shade" aria-hidden="true"></div>
-        </article>
-        <article class="slide" data-chapter="mesh" aria-hidden="true">
-          <img src="assets/img/mesh.jpg" alt="山谷中的多人组网：多节点接力传信" width="2200" height="839">
-          <div class="slide-shade" aria-hidden="true"></div>
-        </article>
-        <div class="story-copy">
-          <div class="pane is-on">
-            <p class="kicker"><span>01</span>通信</p>
-            <h2>北斗传信<br>跨越信号盲区</h2>
-            <p>无公网环境下，仍可发送关键求救信息。探索不必停在信号消失的地方。</p>
-          </div>
-          <div class="pane">
-            <p class="kicker"><span>02</span>可靠</p>
-            <h2>判断是前提<br>扛得住，才可靠</h2>
-            <p>碎石、泥点与冲击扑面而来。柱身、护圈和实体按键留在手里，下一次呼救才有着落。</p>
-          </div>
-          <div class="pane">
-            <p class="kicker"><span>03</span>组网</p>
-            <h2>多人组网<br>多节点接力传信</h2>
-            <p>一个人的信号有限。队友彼此组网，信息沿节点接力，穿过这片山谷。</p>
-          </div>
-        </div>
-        <div class="story-index" role="tablist" aria-label="能力章节">
-          <button type="button" class="is-on" data-go="0" aria-label="北斗传信"></button>
-          <button type="button" data-go="1" aria-label="可靠"></button>
-          <button type="button" data-go="2" aria-label="组网"></button>
-        </div>
-      </div>
-      <div class="story-markers" aria-hidden="true">
-        <div id="signal"></div>
-        <div id="tough"></div>
-        <div id="mesh"></div>
-      </div>
-    </section>
-
-    <section class="colors" id="colors">
-      <div class="colors-head reveal">
-        <p class="eyebrow eyebrow-light">配色</p>
-        <h2>三种地貌，同一种守界</h2>
-        <p>青山、雪岭与冰川。机身颜色贴近你将要走进的那片地。护圈、柱身与停在表面的水珠，为山野天气而准备。</p>
-      </div>
-      <div class="colors-frame" data-active="0">
-        <img src="assets/img/colors.jpg" alt="青山绿、雪岭青、冰川银三种配色" width="1167" height="851">
-        <div class="colors-dims" aria-hidden="true"><span style="opacity:0"></span><span style="opacity:1"></span><span style="opacity:1"></span></div>
-        <div class="colors-zones">
-          <button type="button" data-color="0" aria-label="查看青山绿"></button>
-          <button type="button" data-color="1" aria-label="查看雪岭青"></button>
-          <button type="button" data-color="2" aria-label="查看冰川银"></button>
-        </div>
-      </div>
-      <div class="color-cards" role="radiogroup" aria-label="选择配色">
-        <button class="color-card is-on" type="button" role="radio" aria-checked="true" data-color="0">
-          <i class="swatch swatch-green" aria-hidden="true"></i>
-          <span class="color-name">青山绿</span>
-          <span class="color-line">融于山野，探索未知</span>
-        </button>
-        <button class="color-card" type="button" role="radio" aria-checked="false" data-color="1">
-          <i class="swatch swatch-teal" aria-hidden="true"></i>
-          <span class="color-name">雪岭青</span>
-          <span class="color-line">穿越极境，无畏前行</span>
-        </button>
-        <button class="color-card" type="button" role="radio" aria-checked="false" data-color="2">
-          <i class="swatch swatch-silver" aria-hidden="true"></i>
-          <span class="color-name">冰川银</span>
-          <span class="color-line">山川白雪，穿梭前行</span>
-        </button>
-      </div>
-    </section>
-
-    <section class="controls" id="controls">
-      <div class="section-head reveal">
-        <p class="eyebrow">机身</p>
-        <h2>关键操作，都在手边</h2>
-        <p>光线差、戴着手套的时候，仍然靠位置和手感完成求救。</p>
-      </div>
-      <ul class="control-grid reveal">
-        <li>
-          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="14" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="24" cy="24" r="3" fill="currentColor"/></svg>
-          <h3>顶部电源</h3>
-          <p>环形按键置于机顶。开与关，都在同一处。</p>
-        </li>
-        <li>
-          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M24 8v4M24 36v4M8 24h4M36 24h4M12.5 12.5l2.8 2.8M32.7 32.7l2.8 2.8M12.5 35.5l2.8-2.8M32.7 15.3l2.8-2.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <h3>状态指示</h3>
-          <p>照明、温度、SOS 与警报，沿机身纵向排列。</p>
-        </li>
-        <li>
-          <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="18" y="8" width="12" height="20" rx="6" fill="#f25c1d"/><rect x="18" y="30" width="12" height="10" rx="5" fill="#d7261e"/></svg>
-          <h3>两枚实体键</h3>
-          <p>橙色在上，红色在下。红色求救键与 SOS 放在一起，单独区分。</p>
-        </li>
-        <li>
-          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 40a12 12 0 0 1-8-21V16a8 8 0 0 1 16 0v3a12 12 0 0 1-8 21z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M20 40h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <h3>警报</h3>
-          <p>警报与求救分开标示，需要被找到的时候不必犹豫。</p>
-        </li>
-      </ul>
-    </section>
-
-    <section class="specs" id="specs">
-      <div class="section-head reveal">
-        <p class="eyebrow">参数</p>
-        <h2>产品信息</h2>
-        <p>以下为已经呈现在产品形象中的能力与结构。未写出的数值，不作承诺。</p>
-      </div>
-      <table class="spec-table reveal">
-        <tbody>
-          <tr><th scope="row">产品名称</th><td>AEGIS 守界</td></tr>
-          <tr><th scope="row">产品类型</th><td>户外应急通信终端</td></tr>
-          <tr><th scope="row">产品主张</th><td>守界 · 为更安全的探索</td></tr>
-          <tr><th scope="row">一体集成</th><td>通信、感知、定位、能源管理</td></tr>
-          <tr><th scope="row">通信</th><td>北斗传信。无公网环境下，仍可发送关键求救信息。</td></tr>
-          <tr><th scope="row">组网</th><td>多人组网，多节点接力传信。</td></tr>
-          <tr><th scope="row">机身交互</th><td>顶部环形电源键。纵向指示：照明、温度、SOS、警报。橙色按键在上，红色求救键在下。</td></tr>
-          <tr><th scope="row">结构</th><td>柱形机身，上下护圈，正面实体按键。配色画面中，机身表面可见水珠。</td></tr>
-          <tr><th scope="row">配色</th><td>青山绿、雪岭青、冰川银</td></tr>
-          <tr><th scope="row">场景</th><td>山野徒步、雪岭、冰川，以及没有地面公网的盲区。适合团队出行时彼此接力。</td></tr>
-        </tbody>
-      </table>
-      <p class="spec-note reveal">页面依据产品形象整理，用于展示产品方向。防护等级、续航、重量、频段与认证未在本页标出，不以未列出的数值作为承诺。</p>
-    </section>
-
-    <section class="reserve" id="reserve">
-      <div class="reserve-copy reveal">
-        <p class="eyebrow eyebrow-light">预约</p>
-        <h2>无论多远<br>护你归来</h2>
-        <p>留下联系方式，了解 AEGIS 如何进入你的下一次出发。</p>
-      </div>
-      <form class="reserve-form reveal" id="reserve-form" novalidate>
-        <label class="field">
-          <span>怎么称呼</span>
-          <input name="name" type="text" maxlength="40" autocomplete="name" required>
-        </label>
-        <label class="field">
-          <span>电话或邮箱</span>
-          <input name="contact" type="text" maxlength="80" autocomplete="email" required>
-        </label>
-        <label class="field">
-          <span>常去的场景</span>
-          <select name="scene">
-            <option>徒步</option>
-            <option>登山</option>
-            <option>雪岭 / 冰川</option>
-            <option>团队出行</option>
-            <option>其他</option>
-          </select>
-        </label>
-        <label class="field">
-          <span>关注的配色</span>
-          <select name="color">
-            <option>青山绿</option>
-            <option>雪岭青</option>
-            <option>冰川银</option>
-            <option>还没决定</option>
-          </select>
-        </label>
-        <label class="field">
-          <span>想先了解的事</span>
-          <textarea name="note" rows="3" maxlength="400"></textarea>
-        </label>
-        <p class="form-error" id="form-error" role="alert" hidden>请留下称呼和联系方式。</p>
-        <button class="btn btn-fill btn-light" type="submit">提交预约</button>
-        <p class="form-fine">当前为展示页面。提交后只在这台设备上确认，不会上传。</p>
-      </form>
-      <div class="reserve-done" id="reserve-done" hidden>
-        <p class="eyebrow eyebrow-light">已记下</p>
-        <h2>这条信息留在本地</h2>
-        <p id="reserve-summary"></p>
-        <button class="btn btn-ghost btn-ghost-light" type="button" id="reserve-reset">再写一条</button>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <p class="brand-en">AEGIS</p>
-        <p>守界 · 为更安全的探索</p>
-      </div>
-      <div>
-        <p class="footer-label">产品</p>
-        <a href="#overview">概览</a>
-        <a href="#colors">配色</a>
-        <a href="#specs">参数</a>
-        <a href="#controls">机身</a>
-      </div>
-      <div>
-        <p class="footer-label">能力</p>
-        <a href="#signal">北斗传信</a>
-        <a href="#tough">可靠</a>
-        <a href="#mesh">多人组网</a>
-      </div>
-      <div>
-        <p class="footer-label">咨询</p>
-        <a href="#reserve">预约了解</a>
-        <a href="#film">主题画面</a>
-      </div>
     </div>
-    <div class="footer-bottom">
-      <p>© 2026 AEGIS 守界</p>
-      <p>展示页面。未标注的认证、续航与重量，均不构成承诺。</p>
+    <div class="nav-right">
+      <a class="nav-icon" href="#reserve" aria-label="预约"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/></svg></a>
+      <a class="nav-cta" href="#reserve">立即预约</a>
     </div>
-  </footer>
-
-  <div class="dock" id="dock">
-    <div>
-      <strong>AEGIS 守界</strong>
-      <span>户外应急通信终端</span>
-    </div>
-    <a class="btn btn-fill" href="#reserve">预约咨询</a>
   </div>
+</nav>
 
-  <noscript>
-    <style>
-      .slide { position: relative; opacity: 1; height: 70vh; }
-      .story { height: auto; }
-      .story-sticky { position: relative; height: auto; }
-      .story-index, .story-markers { display: none; }
-      .story-copy { position: static; color: #fff; background: #000; padding: 28px 20px 40px; }
-      .pane { display: block; }
-      .reveal { opacity: 1; transform: none; }
-    </style>
-  </noscript>
-  <script src="assets/js/main.js"></script>
+<!-- Hero -->
+<section class="hero" id="top">
+  <div class="hero-bg">
+    <video id="heroVideo" poster="assets/hero-clean.jpg?v=4" autoplay muted loop playsinline webkit-playsinline="true" x5-playsinline="true" x-webkit-airplay="allow" preload="auto">
+      <source src="assets/aegis-hero.mp4?v=4" type="video/mp4">
+    </video>
+    <img src="assets/hero-clean.jpg?v=4" alt="守界 AEGIS">
+  </div>
+  <div class="hero-veil"></div>
+  <button class="hero-sound" id="soundBtn" type="button">
+    <svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M16 9a4 4 0 0 1 0 6" id="wave"/></svg>
+    <span id="soundTxt">开启声音</span>
+  </button>
+  <div class="scroll-hint">SCROLL</div>
+  <div class="hero-content">
+    <h1>AEGIS</h1>
+    <div class="cn">守 界 · 为 更 安 全 的 探 索</div>
+    <div class="sub">通信　感知　定位　能源管理　一体集成</div>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#reserve">立即预约</a>
+      <a class="btn-ghost" href="#beidou">了解更多</a>
+    </div>
+    <div class="hero-price">首发预约价 <b>¥1499</b> 起 · 新品意向预约登记已开启</div>
+  </div>
+</section>
+
+<!-- 核心数据带 -->
+<section class="stats">
+  <div class="stats-grid">
+    <div class="stat reveal"><div class="num">350<i>g</i></div><div class="lab">整机重量 · 更轻的重量，赋予更大的安全</div></div>
+    <div class="stat reveal"><div class="num">&gt;144<i>h</i></div><div class="lab">常规续航 · SOS 保底续航超 48 小时</div></div>
+    <div class="stat reveal"><div class="num">IP67</div><div class="lab">防水防尘 · 水下一米坚持 30 分钟</div></div>
+    <div class="stat reveal"><div class="num">20000<i>mAh</i></div><div class="lab">半固态电池 · 光伏应急补能</div></div>
+  </div>
+</section>
+
+<!-- 北斗传音 -->
+<section class="story" id="beidou">
+  <div class="bg"><img src="assets/beidou-clean.jpg?v=4" alt="北斗传音 跨越信号盲区"></div>
+  <div class="story-content">
+    <div class="story-text reveal">
+      <div class="eyebrow">北斗短报文</div>
+      <h2 class="h-lg">北斗传音<br>跨越信号盲区</h2>
+      <p class="lead">无公网环境下，仍可发送关键求救信息。北斗卫星直连，让每一次远行都有回应。</p>
+      <ul class="feat-list">
+        <li>北斗短报文离网通信，无信号也能发出 SOS（Pro 版搭载）</li>
+        <li>BDS 北斗定位，轨迹实时可追踪</li>
+        <li>一键 SOS 实体按键，失能时自动触发求救</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 扛得住 -->
+<section class="story right" id="rugged">
+  <div class="bg"><img src="assets/rugged-clean.jpg?v=4" alt="扛得住，才可靠"></div>
+  <div class="story-content">
+    <div class="story-text reveal">
+      <div class="eyebrow">全域三防</div>
+      <h2 class="h-lg">判断是前提<br>扛得住，才可靠</h2>
+      <p class="lead">软八棱三防抗冲击结构 + 宽温域复合热控，-40°C 至 60°C 依然稳定可靠。</p>
+      <ul class="feat-list">
+        <li>1.5 米抗跌落，360° 承载骨架 + 防撞外骨骼</li>
+        <li>气凝胶隔热层，热流降低 80% 以上</li>
+        <li>-20°C 低温环境内部温差 ≤5°C</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 四大能力 -->
+<section class="capabilities" id="capabilities">
+  <div class="cap-head reveal">
+    <div class="eyebrow">一体集成</div>
+    <h2 class="h-xl">四大能力，一机集结</h2>
+    <p class="lead">通信、感知、定位、能源管理。传统户外散装装备总重 1500g 以上，守界 AEGIS 仅 350g。</p>
+  </div>
+  <div class="cap-grid">
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 16 0"/><path d="M7.5 12a4.5 4.5 0 0 1 9 0"/><circle cx="12" cy="12" r="1.4"/><path d="M12 13.5V20"/></svg></div>
+      <h3>通信</h3><div class="en">LoRa MESH</div>
+      <p>LoRa Mesh 自组网，多跳接力让求救信息传得出。无网队员协同，预警 2 秒内送达队友，AES-128 加密。</p>
+    </div>
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+      <h3>感知</h3><div class="en">AI 研判</div>
+      <p>运动、环境、位置三维感知，端侧 AI 秒级察觉异常。SAFE / WARNING / SOS 三级风险分级响应。</p>
+    </div>
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></div>
+      <h3>定位</h3><div class="en">BDS 北斗</div>
+      <p>北斗高精度定位，位置与轨迹全程记录。队员状态自组网转发，风险即达，无网也能协同。</p>
+    </div>
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="15" height="9" rx="2"/><path d="M21 11v3"/><path d="M9.5 10.5 8 13h3l-1.5 2.5"/></svg></div>
+      <h3>能源管理</h3><div class="en">BMS + 光伏</div>
+      <p>智能 BMS 精准估算 SOC，过充过放过温多级保护。卷轴式光伏板应急补能，晴天 6-8 小时充满主机。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 护你归来 -->
+<section class="story bare" id="guard">
+  <div class="bg"><img src="assets/guard.png?v=4" alt="无论多远 护你归来"></div>
+  <div class="story-content">
+    <div class="story-text reveal">
+      <div class="eyebrow">主动安全</div>
+      <p class="lead">让风险更早被发现，让关键安全能力持续在线。从「大范围搜索」走向「精准响应」。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 实测数据 -->
+<section class="lab">
+  <div class="lab-inner">
+    <div class="lab-head reveal">
+      <div class="eyebrow">实测验证</div>
+      <h2 class="h-xl">数据，是最好的承诺</h2>
+    </div>
+    <div class="lab-grid">
+      <div class="lab-card feature reveal"><div class="num">98.24%</div><div class="lab-t">跌倒检测 F1 值</div><div class="lab-d">运动、环境、位置三维感知，端侧 AI 秒级察觉异常，SAFE / WARNING / SOS 三级风险分级响应</div></div>
+      <div class="lab-card reveal"><div class="num">25.5s</div><div class="lab-t">风险发现提前</div><div class="lab-d">误报漏报降低 68.5%，安全链路稳定性提升 43%</div></div>
+      <div class="lab-card reveal"><div class="num green">5.6%</div><div class="lab-t">感知误报率</div><div class="lab-d">由初代 17.8% 降至 5.6%，雪山实测验证成功</div></div>
+      <div class="lab-card reveal"><div class="num">87-98%</div><div class="lab-t">离网通信送达率</div><div class="lab-d">1-N 跳投递率 ≥90%，-20~60°C 持续运行验证</div></div>
+      <div class="lab-card reveal"><div class="num">21.47ms</div><div class="lab-t">端侧 AI 推理耗时</div><div class="lab-d">多源数据融合，本地实时完成风险研判</div></div>
+      <div class="lab-card reveal"><div class="num green">26%</div><div class="lab-t">光伏光电转换率</div><div class="lab-d">钙钛矿材料，万次放电依旧稳定</div></div>
+      <div class="lab-card reveal"><div class="num">6 项</div><div class="lab-t">核心专利布局</div><div class="lab-d">科技查新：国内尚未见相同技术报道</div></div>
+    </div>
+    <p class="lab-note">数据口径：来源于 2026 年 3 月 1 日至 4 月 1 日实测与用户反馈记录，及学校实验室测试数据。</p>
+  </div>
+</section>
+
+<!-- 技术规格 -->
+<section class="specs" id="specs">
+  <div class="specs-inner">
+    <div class="specs-head reveal">
+      <div class="eyebrow">技术规格</div>
+      <h2 class="h-xl">每一处，都有据可依</h2>
+    </div>
+    <div class="reveal">
+      <div class="spec-cat">概览</div>
+      <div class="spec-grid">
+        <div class="spec-tile"><div class="t-lab">尺寸</div><div class="t-val">Φ71.27 × 190.75 mm<small>主机体积，单手可握</small></div></div>
+        <div class="spec-tile"><div class="t-lab">重量</div><div class="t-val">350 g<small>传统散装装备 1500g+</small></div></div>
+        <div class="spec-tile"><div class="t-lab">主体材料</div><div class="t-val">铝合金 + TPV<small>防护缓冲复合结构</small></div></div>
+      </div>
+      <div class="spec-cat">结构与防护</div>
+      <div class="spec-grid">
+        <div class="spec-tile"><div class="t-lab">防护等级</div><div class="t-val">IP67<small>水下一米坚持 30 分钟</small></div></div>
+        <div class="spec-tile"><div class="t-lab">抗跌落</div><div class="t-val">1.5 m<small>软八棱缓冲骨架</small></div></div>
+        <div class="spec-tile"><div class="t-lab">工作温度</div><div class="t-val">-40°C ~ 60°C<small>宽温域复合热控</small></div></div>
+        <div class="spec-tile wide"><div class="t-lab">认证标准</div><div class="t-val">GB/T 4208-2017 · IEC 60068-2-31:2008 · GB/T 2423.37-2006<small>防水 / 防摔 / 防尘 三防认证</small></div></div>
+      </div>
+      <div class="spec-cat">定位与通信</div>
+      <div class="spec-grid">
+        <div class="spec-tile"><div class="t-lab">定位方式</div><div class="t-val">BDS 北斗<small>位置轨迹全程可追踪</small></div></div>
+        <div class="spec-tile"><div class="t-lab">离网通信</div><div class="t-val">北斗短报文 · LoRa Mesh<small>北斗短报文为 Pro 版功能</small></div></div>
+        <div class="spec-tile"><div class="t-lab">数据连接</div><div class="t-val">Bluetooth 5.0<small>手机 App 互联</small></div></div>
+      </div>
+      <div class="spec-cat">能源与续航</div>
+      <div class="spec-grid">
+        <div class="spec-tile"><div class="t-lab">电池容量</div><div class="t-val">20,000 mAh<small>半固态电池 · 低温更稳</small></div></div>
+        <div class="spec-tile"><div class="t-lab">常规续航</div><div class="t-val">&gt;144 h<small>长线徒步全程在线</small></div></div>
+        <div class="spec-tile"><div class="t-lab">SOS 保底续航</div><div class="t-val">&gt;48 h<small>关键时刻持续求救</small></div></div>
+        <div class="spec-tile wide"><div class="t-lab">充电方式</div><div class="t-val">Type-C + 应急光伏<small>光伏展开 300 × 180 mm，额定功率 10W</small></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 版本对比 -->
+<section class="versions" id="versions">
+  <div class="versions-inner">
+    <div class="versions-head reveal">
+      <div class="eyebrow">版本价格</div>
+      <h2 class="h-xl">两个版本，各取所需</h2>
+      <p class="lead">标准版满足日常户外安全协同；Pro 版内置北斗天线，搭载北斗短报文模块，深入无公网之境依然求救可达。</p>
+    </div>
+    <div class="ver-row">
+      <div class="ver-card reveal" data-ver="标准版 ¥1499">
+        <div class="v-tag">STANDARD</div>
+        <h3>守界 AEGIS 标准版</h3>
+        <div class="v-price">¥1499<small> / 套</small></div>
+        <div class="v-sub">近郊徒步 · 有网环境 · 小队协同</div>
+        <ul>
+          <li class="yes">LoRa Mesh 自组网小队通信</li>
+          <li class="yes">AI 多维感知 · 跌倒检测 · 三级风险响应</li>
+          <li class="yes">BDS 北斗定位 · 轨迹追踪</li>
+          <li class="yes">20000mAh · &gt;144h 续航 · 光伏应急补能</li>
+          <li class="yes">IP67 三防 · -40~60°C 宽温域</li>
+          <li class="no">北斗短报文卫星求救（内置北斗天线）</li>
+        </ul>
+        <a class="v-btn" href="#reserve">选择标准版</a>
+      </div>
+      <div class="ver-card pro selected reveal" data-ver="Pro 版 ¥2899">
+        <div class="ver-badge">推荐 · 旗舰配置</div>
+        <div class="v-tag">PRO</div>
+        <h3>守界 AEGIS Pro</h3>
+        <div class="v-price">¥2899<small> / 套</small></div>
+        <div class="v-sub">高原重装 · 无人区穿越 · 全程无网</div>
+        <ul>
+          <li class="yes">标准版全部能力</li>
+          <li class="yes">北斗短报文卫星求救（内置北斗天线）</li>
+          <li class="yes">无公网 SOS 直达 · 跨越信号盲区</li>
+          <li class="yes">失能自动求救触发</li>
+          <li class="yes">SOS 保底续航 &gt;48h</li>
+        </ul>
+        <a class="v-btn" href="#reserve">选择 Pro 版</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 配色 -->
+<section class="colors" id="colors">
+  <div class="colors-inner">
+    <div class="reveal">
+      <div class="eyebrow">四款配色</div>
+      <h2 class="h-xl">选择你的山野之色</h2>
+    </div>
+    <div class="color-row" id="colorRow">
+      <div class="color-item reveal" data-color="青山绿">
+        <div class="swatch"></div>
+        <div class="pick">点击选择</div>
+        <div class="meta"><div class="cn2">青山绿</div><div class="desc">融于山野 · 探索未知</div></div>
+      </div>
+      <div class="color-item reveal" data-color="雪岭青">
+        <div class="swatch"></div>
+        <div class="pick">点击选择</div>
+        <div class="meta"><div class="cn2">雪岭青</div><div class="desc">穿越极境 · 无畏前行</div></div>
+      </div>
+      <div class="color-item reveal" data-color="冰川银">
+        <div class="swatch"></div>
+        <div class="pick">点击选择</div>
+        <div class="meta"><div class="cn2">冰川银</div><div class="desc">冰川白雪 · 穿梭孤行</div></div>
+      </div>
+      <div class="color-item reveal" data-color="曜石黑">
+        <div class="swatch"></div>
+        <div class="pick">点击选择</div>
+        <div class="meta"><div class="cn2">曜石黑<span class="classic">经典配色</span></div><div class="desc">曜岩凝夜 · 沉稳如故</div></div>
+      </div>
+    </div>
+    <p class="lab-note reveal" style="margin-top:34px">点击配色卡片，即可在下方预约表单中同步选定</p>
+  </div>
+</section>
+
+<!-- 新品意向预约登记 -->
+<section class="reserve" id="reserve">
+  <div class="reserve-inner">
+    <div class="reveal reserve-lead">
+      <div class="eyebrow">新品意向预约登记</div>
+      <h2 class="h-xl">守界 AEGIS</h2>
+      <div class="price-tag">
+        <span class="rmb" id="priceShow">¥2899</span><span class="per">/ 套（当前选中：<b id="verShow">Pro 版</b>）</span>
+        <span class="ver-note">标准版 ¥1499 · Pro 版 ¥2899（北斗短报文卫星求救）</span>
+      </div>
+      <div class="crowd">
+        <div class="c-t">新品意向预约登记目标 <b>500 台</b> · 当前进度 <b id="crowdPct">6%</b></div>
+        <div class="crowd-bar"><i id="crowdBar"></i></div>
+        <div class="c-d">已获企业意向订单 30 台，官网预约人数实时累计计入进度。达成目标即启动首批量产，预约用户优先发货。</div>
+      </div>
+      <ul class="reserve-points">
+        <li>新品意向预约登记，无需付款，不收取任何定金</li>
+        <li>达成首批目标即量产，开售第一时间短信 / 电话通知</li>
+        <li>预约用户享首发优先发货权与早鸟权益</li>
+        <li>本站不提供在线购买，仅为产品展示与新品意向预约登记</li>
+      </ul>
+    </div>
+    <div class="form-card reveal">
+      <form id="reserveForm">
+        <h3>新品意向预约登记</h3>
+        <p class="tip">填写信息即可完成新品意向预约登记，无需支付任何费用。</p>
+        <div class="field"><label>姓名</label><input type="text" id="fName" placeholder="请输入您的姓名" required></div>
+        <div class="field"><label>手机号码</label><input type="tel" id="fPhone" placeholder="用于开售前通知您" pattern="1[0-9]{10}" required></div>
+        <div class="field"><label>您的类型</label>
+          <select id="fType">
+            <option>个人户外爱好者</option>
+            <option>户外俱乐部 / 机构</option>
+            <option>科考 / 作业团队</option>
+            <option>合作 / 渠道咨询</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>选择版本</label>
+            <select id="fVer"><option>Pro 版 ¥2899</option><option>标准版 ¥1499</option></select>
+          </div>
+          <div class="field"><label>预约数量</label>
+            <select id="fCount"><option>1 台</option><option>2 台</option><option>3 台</option><option>4 台及以上</option></select>
+          </div>
+        </div>
+        <div class="field"><label>心仪配色</label>
+          <select id="fColor"><option>曜石黑（经典）</option><option>青山绿</option><option>雪岭青</option><option>冰川银</option></select>
+        </div>
+        <button type="submit" class="btn-primary">提交意向预约登记</button>
+      </form>
+      <div class="form-ok" id="formOk">
+        <div class="tick">✓</div>
+        <h4>预约成功</h4>
+        <p>我们已记录您的新品意向预约登记信息。<br>达成首批目标量产时将第一时间通知您，无需任何付款。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 页脚 -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div class="foot-brand">AEGIS 守界
+        <p>知风险 · 护远行</p>
+      </div>
+      <div class="foot-col">
+        <h5>产品</h5>
+        <a href="#beidou">北斗通信</a><a href="#rugged">三防可靠</a><a href="#capabilities">四大能力</a><a href="#specs">技术规格</a>
+      </div>
+      <div class="foot-col">
+        <h5>适用人群</h5>
+        <span>野外科研科考队员</span><span>高原重装长线徒步爱好者</span><span>高海拔徒步爱好者</span>
+      </div>
+      <div class="foot-col">
+        <h5>预约</h5>
+        <a href="#reserve">新品意向预约登记</a><span>标准版 ¥1499 / 套</span><span>Pro 版 ¥2899 / 套</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      守界 AEGIS —— 复杂环境下的个人主动安全保障装备 · Active Personal Safety System for Extreme Environments<br>
+      本站为产品品牌展示与新品意向预约登记网站，不提供在线购买功能。页面数据来源于项目团队 2026 年实测记录与公开资料。<br>
+      © 2026 守界 AEGIS 项目团队 · 重庆工程职业技术大学
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 导航滚动态
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 10));
+
+  // 滚动显现动画
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .18 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // 故事区块视差缩放触发
+  const ioStory = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('in');
+  }), { threshold: .3 });
+  document.querySelectorAll('.story').forEach(el => ioStory.observe(el));
+
+  // 版本卡片：点击选定并同步到预约表单与价格显示
+  const verCards = document.querySelectorAll('.ver-card');
+  const verPrice = { 'Pro 版 ¥2899': ['¥2899', 'Pro 版'], '标准版 ¥1499': ['¥1499', '标准版'] };
+  function syncVer(v) {
+    document.getElementById('fVer').value = v;
+    document.getElementById('priceShow').textContent = verPrice[v][0];
+    document.getElementById('verShow').textContent = verPrice[v][1];
+  }
+  verCards.forEach(card => card.addEventListener('click', () => {
+    verCards.forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    syncVer(card.dataset.ver);
+    document.getElementById('reserve').scrollIntoView({ behavior: 'smooth' });
+  }));
+  document.getElementById('fVer').addEventListener('change', e => {
+    verCards.forEach(c => c.classList.toggle('selected', c.dataset.ver === e.target.value));
+    syncVer(e.target.value);
+  });
+
+  // 首屏视频：确保自动播放，并提供声音开关
+  const heroVideo = document.getElementById('heroVideo');
+  const playHero = () => { const p = heroVideo.play(); if (p && p.catch) p.catch(() => {}); };
+  playHero();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) playHero(); });
+  document.getElementById('soundBtn').addEventListener('click', () => {
+    heroVideo.muted = !heroVideo.muted;
+    document.getElementById('soundTxt').textContent = heroVideo.muted ? '开启声音' : '关闭声音';
+    document.getElementById('wave').style.opacity = heroVideo.muted ? '0' : '1';
+    playHero();
+  });
+
+  // 配色卡片：点击选定并同步到预约表单
+  const colorItems = document.querySelectorAll('#colorRow .color-item');
+  colorItems.forEach(item => item.addEventListener('click', () => {
+    colorItems.forEach(i => i.classList.remove('selected'));
+    item.classList.add('selected');
+    const sel = document.getElementById('fColor');
+    const v = item.dataset.color === '曜石黑' ? '曜石黑（经典）' : item.dataset.color;
+    sel.value = v;
+    document.getElementById('reserve').scrollIntoView({ behavior: 'smooth' });
+  }));
+
+  // 意向预约进度条：意向订单 30 台 + 本机预约数，目标 500 台
+  const TARGET = 500, BASE = 30;
+  function renderCrowd() {
+    const n = JSON.parse(localStorage.getItem('aegis_reservations') || '[]').length;
+    const cur = BASE + n;
+    const pct = Math.min(100, Math.round(cur / TARGET * 1000) / 10);
+    document.getElementById('crowdPct').textContent = pct + '%';
+    requestAnimationFrame(() => document.getElementById('crowdBar').style.width = pct + '%');
+  }
+  renderCrowd();
+
+  // 预约表单（仅登记，不涉及支付）
+  document.getElementById('reserveForm').addEventListener('submit', ev => {
+    ev.preventDefault();
+    const rec = {
+      name: document.getElementById('fName').value.trim(),
+      phone: document.getElementById('fPhone').value.trim(),
+      type: document.getElementById('fType').value,
+      ver: document.getElementById('fVer').value,
+      count: document.getElementById('fCount').value,
+      color: document.getElementById('fColor').value,
+      time: new Date().toLocaleString('zh-CN')
+    };
+    const list = JSON.parse(localStorage.getItem('aegis_reservations') || '[]');
+    list.push(rec);
+    localStorage.setItem('aegis_reservations', JSON.stringify(list));
+    ev.target.style.display = 'none';
+    document.getElementById('formOk').style.display = 'block';
+    renderCrowd();
+  });
+</script>
 </body>
 </html>
